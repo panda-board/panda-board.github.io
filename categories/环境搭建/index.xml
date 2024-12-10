@@ -67,8 +67,8 @@
 &lt;/ul&gt;
 &lt;h3 id=&#34;13-配置ssh无密码连接非必要&#34;&gt;1.3 配置SSH无密码连接（非必要）
 &lt;/h3&gt;&lt;ul&gt;
-&lt;li&gt;在 &lt;code&gt;Windows&lt;/code&gt; 的命令行中输入 &lt;code&gt;ssh-keygen -t rsa -C &amp;quot;xxx@chinasoftinc.com&amp;quot;&lt;/code&gt;，按 &lt;code&gt;Enter&lt;/code&gt; 键3次生成以下文件，将框起来的文件拷贝到虚拟机中的 &lt;code&gt;home&lt;/code&gt; 目录下。 &lt;img src=&#34;./pic/rsa_pub.png&#34; width=&#34;80%&#34;&gt;&lt;/li&gt;
-&lt;li&gt;在 &lt;code&gt;Ubuntu&lt;/code&gt; 的终端下，输入一样的命令 &lt;code&gt;ssh-keygen -t rsa -C &amp;quot;xxx@chinasoftinc.com&amp;quot;&lt;/code&gt; ，也是按 &lt;code&gt;Enter&lt;/code&gt; 键3次。&lt;/li&gt;
+&lt;li&gt;在 &lt;code&gt;Windows&lt;/code&gt; 的命令行中输入 &lt;code&gt;ssh-keygen -t rsa -C &amp;quot;xxx@123.com&amp;quot;&lt;/code&gt;，按 &lt;code&gt;Enter&lt;/code&gt; 键3次生成以下文件，将框起来的文件拷贝到虚拟机中的 &lt;code&gt;home&lt;/code&gt; 目录下。 &lt;img src=&#34;./pic/rsa_pub.png&#34; width=&#34;80%&#34;&gt;&lt;/li&gt;
+&lt;li&gt;在 &lt;code&gt;Ubuntu&lt;/code&gt; 的终端下，输入一样的命令 &lt;code&gt;ssh-keygen -t rsa -C &amp;quot;xxx@123.com&amp;quot;&lt;/code&gt; ，也是按 &lt;code&gt;Enter&lt;/code&gt; 键3次。&lt;/li&gt;
 &lt;li&gt;在 &lt;code&gt;Ubuntu&lt;/code&gt; 的终端下，进入刚刚拷贝的 &lt;code&gt;id_rsa.pub&lt;/code&gt; 的目录下，将id_rsa内容以追加的方式，写入anthorized_keys文件里。命令为以下：
 &lt;div class=&#34;highlight&#34;&gt;&lt;div class=&#34;chroma&#34;&gt;
 &lt;table class=&#34;lntable&#34;&gt;&lt;tr&gt;&lt;td class=&#34;lntd&#34;&gt;
