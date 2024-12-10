@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'><meta name='description' content="通过">
+<title>【1】配置 SSH 和 Samba</title>
+
+<link rel='canonical' href='http://localhost:1313/p/hjdj_1/'>
+
+<link rel="stylesheet" href="/scss/style.min.663803bebe609202d5b39d848f2d7c2dc8b598a2d879efa079fa88893d29c49c.css"><meta property='og:title' content="【1】配置 SSH 和 Samba">
+<meta property='og:description' content="通过">
+<meta property='og:url' content='http://localhost:1313/p/hjdj_1/'>
+<meta property='og:site_name' content='PandaBoard'>
+<meta property='og:type' content='article'><meta property='article:section' content='Post' /><meta property='article:published_time' content='2024-12-10T00:00:00&#43;00:00'/><meta property='article:modified_time' content='2024-12-10T00:00:00&#43;00:00'/><meta property='og:image' content='http://localhost:1313/p/hjdj_1/ubuntu.png' />
+<meta name="twitter:title" content="【1】配置 SSH 和 Samba">
+<meta name="twitter:description" content="通过"><meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content='http://localhost:1313/p/hjdj_1/ubuntu.png' />
+    </head>
+    <body class="
+    article-page
+    ">
+    <script>
+        (function() {
+            const colorSchemeKey = 'StackColorScheme';
+            if(!localStorage.getItem(colorSchemeKey)){
+                localStorage.setItem(colorSchemeKey, "dark");
+            }
+        })();
+    </script><script>
+    (function() {
+        const colorSchemeKey = 'StackColorScheme';
+        const colorSchemeItem = localStorage.getItem(colorSchemeKey);
+        const supportDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches === true;
+
+        if (colorSchemeItem == 'dark' || colorSchemeItem === 'auto' && supportDarkMode) {
+            
+
+            document.documentElement.dataset.scheme = 'dark';
+        } else {
+            document.documentElement.dataset.scheme = 'light';
+        }
+    })();
+</script>
+<div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky ">
+    <button class="hamburger hamburger--spin" type="button" id="toggle-menu" aria-label="切换菜单">
+        <span class="hamburger-box">
+            <span class="hamburger-inner"></span>
+        </span>
+    </button>
+
+    <header>
+        
+            
+            <figure class="site-avatar">
+                <a href="/">
+                
+                    
+                    
+                    
+                        
+                        <img src="/img/avatar_hu14932104140586143418.png" width="300"
+                            height="300" class="site-logo" loading="lazy" alt="Avatar">
+                    
+                
+                </a>
+                
+                    <span class="emoji">🤪</span>
+                
+            </figure>
+            
+        
+        
+        <div class="site-meta">
+            <h1 class="site-name"><a href="/">PandaBoard</a></h1>
+            <h2 class="site-description">嵌入式软件开发，博客用于记录生活和工作笔记。</h2>
+        </div>
+    </header><ol class="menu-social">
+            
+                <li>
+                    <a 
+                        href='https://space.bilibili.com/1385800545'
+                        target="_blank"
+                        title="bilibili"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-brand-bilibili"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 10a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v6a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4v-6z" /><path d="M8 3l2 3" /><path d="M16 3l-2 3" /><path d="M9 13v-2" /><path d="M15 11v2" /></svg>
+                        
+                    </a>
+                </li>
+            
+                <li>
+                    <a 
+                        href='https://gitee.com/pandaboard'
+                        target="_blank"
+                        title="gitee"
+                        rel="me"
+                    >
+                        
+                        
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-brand-github" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+  <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+</svg>
+
+
+
+                        
+                    </a>
+                </li>
+            
+        </ol><ol class="menu" id="main-menu">
+        
+        
+        
+        <li >
+            <a href='/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <polyline points="5 12 3 12 12 3 21 12 19 12" />
+  <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+  <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+</svg>
+
+
+
+                
+                <span>主页</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%85%B3%E4%BA%8E/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="7" r="4" />
+  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+</svg>
+
+
+
+                
+                <span>关于</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/archives/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <rect x="3" y="4" width="18" height="4" rx="2" />
+  <path d="M5 8v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-10" />
+  <line x1="10" y1="12" x2="14" y2="12" />
+</svg>
+
+
+
+                
+                <span>分类</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/search/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="10" cy="10" r="7" />
+  <line x1="21" y1="21" x2="15" y2="15" />
+</svg>
+
+
+
+                
+                <span>搜索</span>
+            </a>
+        </li>
+        
+        
+        <li >
+            <a href='/%E5%8F%8B%E6%83%85%E9%93%BE%E6%8E%A5/' >
+                
+                
+                
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" />
+  <path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" />
+</svg>
+
+
+
+                
+                <span>友情链接</span>
+            </a>
+        </li>
+        
+        <li class="menu-bottom-section">
+            <ol class="menu">
+
+                
+                    <li id="dark-mode-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="8" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="16" cy="12" r="2" />
+  <rect x="2" y="6" width="20" height="12" rx="6" />
+</svg>
+
+
+
+                        <span>暗色模式</span>
+                    </li>
+                
+            </ol>
+        </li>
+    </ol>
+</aside>
+
+    <aside class="sidebar right-sidebar sticky">
+        
+            
+                
+    <section class="widget archives">
+        <div class="widget-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <line x1="5" y1="9" x2="19" y2="9" />
+  <line x1="5" y1="15" x2="19" y2="15" />
+  <line x1="11" y1="4" x2="7" y2="20" />
+  <line x1="17" y1="4" x2="13" y2="20" />
+</svg>
+
+
+
+        </div>
+        <h2 class="widget-title section-title">目录</h2>
+        
+        <div class="widget--toc">
+            <nav id="TableOfContents">
+  <ol>
+    <li><a href="#配置-ssh-和-samba">配置 SSH 和 Samba</a></li>
+    <li><a href="#1-搭建常用开发环境">1. 搭建常用开发环境</a>
+      <ol>
+        <li><a href="#11-vscode通过ssh连接ubuntu">1.1 VScode通过SSH连接Ubuntu</a></li>
+        <li><a href="#12-错误处理">1.2 错误处理</a></li>
+        <li><a href="#13-配置ssh无密码连接非必要">1.3 配置SSH无密码连接（非必要）</a></li>
+      </ol>
+    </li>
+    <li><a href="#2安装samba">2.安装Samba</a></li>
+    <li><a href="#3docker的基础">3.docker的基础</a>
+      <ol>
+        <li><a href="#31-docker-是什么用来干什么">3.1 docker 是什么，用来干什么？</a></li>
+        <li><a href="#32-获取-docker">3.2 获取 docker</a></li>
+        <li><a href="#33-获取docker镜像">3.3 获取docker镜像</a></li>
+        <li><a href="#34-运行-docker">3.4 运行 docker</a></li>
+        <li><a href="#35-保存修改后的镜像">3.5 保存修改后的镜像</a></li>
+        <li><a href="#36-打包-docker-镜像">3.6 打包 docker 镜像</a></li>
+      </ol>
+    </li>
+    <li><a href="#38-docker-的删除">3.8 docker 的删除</a></li>
+  </ol>
+</nav>
+        </div>
+    </section>
+
+            
+        
+    </aside>
+
+
+            <main class="main full-width">
+    <article class="has-image main-article">
+    <header class="article-header">
+        <div class="article-image">
+            <a href="/p/hjdj_1/">
+                <img src="/p/hjdj_1/ubuntu_hu3364961211141164386.png"
+                        srcset="/p/hjdj_1/ubuntu_hu3364961211141164386.png 800w, /p/hjdj_1/ubuntu_hu6070085887274381906.png 1600w"
+                        width="800" 
+                        height="462" 
+                        loading="lazy"
+                        alt="Featured image of post 【1】配置 SSH 和 Samba" />
+                
+            </a>
+        </div>
+    
+
+    <div class="article-details">
+    
+    <header class="article-category">
+        
+            <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" >
+                环境搭建
+            </a>
+        
+    </header>
+    
+
+    <div class="article-title-wrapper">
+        <h2 class="article-title">
+            <a href="/p/hjdj_1/">【1】配置 SSH 和 Samba</a>
+        </h2>
+    
+        
+        <h3 class="article-subtitle">
+            通过
+        </h3>
+        
+    </div>
+
+    
+    
+    
+    
+    <footer class="article-time">
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <path d="M11.795 21h-6.795a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v4" />
+  <circle cx="18" cy="18" r="4" />
+  <path d="M15 3v4" />
+  <path d="M7 3v4" />
+  <path d="M3 11h16" />
+  <path d="M18 16.496v1.504l1 1" />
+</svg>
+                <time class="article-time--published">2024-12-10</time>
+            </div>
+        
+
+        
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <path stroke="none" d="M0 0h24v24H0z"/>
+  <circle cx="12" cy="12" r="9" />
+  <polyline points="12 7 12 12 15 15" />
+</svg>
+
+
+
+                <time class="article-time--reading">
+                    阅读时长: 6 分钟
+                </time>
+            </div>
+        
+    </footer>
+    
+
+    
+</div>
+
+</header>
+
+    <section class="article-content">
+    
+    
+    <h2 id="配置-ssh-和-samba">配置 SSH 和 Samba
+</h2><p>为了开发更加的方便，搭建了SSH、Samba、Docker这些使用比较频繁的工具，在此记录一下。分享经验和踩过的坑，希望对后续要做这块的同学会有点帮助，能快速上手。欢迎评论区提出宝贵意见，一起交流，共同进步。
+本文主要从三个部分来介绍：</p>
+<ol>
+<li>搭建常用开发环境</li>
+<li>安装Samba</li>
+<li>docker的基础知识</li>
+</ol>
+<h2 id="1-搭建常用开发环境">1. 搭建常用开发环境
+</h2><h3 id="11-vscode通过ssh连接ubuntu">1.1 VScode通过SSH连接Ubuntu
+</h3><ul>
+<li>在windows下安装VScode，下载地址：<a class="link" href="https://code.visualstudio.com/Download"  target="_blank" rel="noopener"
+    >https://code.visualstudio.com/Download</a></li>
+<li>在VScode扩展地方安装以下几个插件</br> <img src="./pic/vscode_ex.png" width="80%"></li>
+<li>在Ubuntu中也需要安装SSH，在终端中通过以下两个命令安装。
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt-get install ssh
+</span></span><span class="line"><span class="cl">sudo apt-get install openssh-server
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 并查看当前Ubuntu的IP地址</span>
+</span></span><span class="line"><span class="cl">ifconfig
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>在Vscode下按住 <code>Ctrl+Shift+P</code>，输入 <code>remote</code> 选择下图中的SSH配置文件进行配置。</br> <img src="./pic/vscode_set.png" width="80%"></li>
+<li>根据在Ubuntu中通过命令 <code>ifconfig</code> 得到的ip地址填写到配置中</br> <img src="./pic/vscode_cfg.png" width="80%"></li>
+<li>在Vscode下按住 <code>Ctrl+Shift+P</code>，输入 <code>remote</code> 选择 <code>Remote-SSH</code>进行连接。</br> <img src="./pic/vscode_connect.png" width="80%"></li>
+</ul>
+<h3 id="12-错误处理">1.2 错误处理
+</h3><p>如果出现 <code>An SSH installation couldn't be found</code>，则需要在windows下安装SSH的客户端并配置环境变量。</p>
+<ul>
+<li>可以 <code>win+R</code> 输入 <code>cmd</code> 进入命令行里，输入 <code>ssh</code> 查看windows有没有安装SSH。</br> <img src="./pic/windows_ssh.png" width="80%"></li>
+<li>一般情况下 <code>win 10</code> 默认安装了SSH，但是像 <code>win 7</code> 就没有默认安装，就需要安装一下。</li>
+<li>windows下SSH软件安装地址：
+<ul>
+<li><a class="link" href="https://github.com/PowerShell/Win32-OpenSSH/releases/download/V8.6.0.0p1-Beta/OpenSSH-Win64.zip"  target="_blank" rel="noopener"
+    >OpenSSH-Win64.zip</a></li>
+<li><a class="link" href="https://github.com/PowerShell/Win32-OpenSSH/releases/download/V8.6.0.0p1-Beta/OpenSSH-Win32.zip"  target="_blank" rel="noopener"
+    >OpenSSH-Win32.zip</a></li>
+<li><a class="link" href="https://blog.csdn.net/qq_42951560/article/details/120021573?spm=1001.2101.3001.6661.1%5c&amp;utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-1.pc_relevant_antiscanv2%5c&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7E"  target="_blank" rel="noopener"
+    >配置环境变量</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="13-配置ssh无密码连接非必要">1.3 配置SSH无密码连接（非必要）
+</h3><ul>
+<li>在 <code>Windows</code> 的命令行中输入 <code>ssh-keygen -t rsa -C &quot;xxx@chinasoftinc.com&quot;</code>，按 <code>Enter</code> 键3次生成以下文件，将框起来的文件拷贝到虚拟机中的 <code>home</code> 目录下。 <img src="./pic/rsa_pub.png" width="80%"></li>
+<li>在 <code>Ubuntu</code> 的终端下，输入一样的命令 <code>ssh-keygen -t rsa -C &quot;xxx@chinasoftinc.com&quot;</code> ，也是按 <code>Enter</code> 键3次。</li>
+<li>在 <code>Ubuntu</code> 的终端下，进入刚刚拷贝的 <code>id_rsa.pub</code> 的目录下，将id_rsa内容以追加的方式，写入anthorized_keys文件里。命令为以下：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">cat id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+</ul>
+<p>至此，免密登录就已经完成，下次登录不需要再输入密码啦~</p>
+<h2 id="2安装samba">2.安装Samba
+</h2><p>我们在开发的过程中，难免需要在与目标机器来回拷贝数据。而VMwere有时候tool工具不是很好用，更新tool还时常出现问题。所以我们一般情况就会安装一个Samba来解决这个问题，让访问目标机器就像访问自己磁盘一样简单。那我们开始吧~</p>
+<ul>
+<li>在 <code>Ubuntu</code> 中安装我们所需的软件 <code>Samba</code>。
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo apt-get install samba
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>配置 <code>samba</code>，在打开的文件末尾添加如下内容：
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo vim /etc/samba/smb.conf
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 要添加的内容如下</span>
+</span></span><span class="line"><span class="cl">    <span class="o">[</span>share<span class="o">]</span>
+</span></span><span class="line"><span class="cl">	<span class="nv">comment</span> <span class="o">=</span> Temporary file space
+</span></span><span class="line"><span class="cl">	<span class="nv">path</span> <span class="o">=</span> /home/user/
+</span></span><span class="line"><span class="cl">	<span class="nv">writable</span> <span class="o">=</span> yes
+</span></span><span class="line"><span class="cl">	<span class="nv">browseable</span> <span class="o">=</span> yes
+</span></span><span class="line"><span class="cl">	guest <span class="nv">ok</span> <span class="o">=</span> yes
+</span></span><span class="line"><span class="cl">	<span class="nv">public</span> <span class="o">=</span> yes
+</span></span><span class="line"><span class="cl">	valid <span class="nv">users</span> <span class="o">=</span> user
+</span></span><span class="line"><span class="cl">	<span class="nb">readonly</span> <span class="o">=</span> yes
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Tisp 此处需要vi 或者 vim工具来进行修改</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 缺少工具就使用 sudo apt-get install vim 安装一下</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 输入sudo vim /etc/samba/smb.conf 之后按 i 就可以粘贴啦（插入模式）</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 粘贴之后按 Esc 推出插入模式</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 此时按 Shift + ; 键进入命令行模式</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># 输入 wq 按回车即可保存并退出</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 每次改动之后 source 是一个好习惯</span>
+</span></span><span class="line"><span class="cl"><span class="nb">source</span> /etc/samba/smb.conf
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>用下面的命令添加自己的登录用户名和密码，建议与Ubuntu的一致（对外的设备可不能这么玩）。
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">sudo smbpasswd -a 用户名
+</span></span><span class="line"><span class="cl">输入两次密码
+</span></span></code></pre></td></tr></table>
+</div>
+</div></li>
+<li>添加 Ubuntu 的网络映射</br> <img src="./pic/samba.png" width="80%"></li>
+<li>配置 samba 的路径 <code>\\192.168.111.129\share</code> ，即 <code>Ubuntu</code> 的IP地址加共享的路径。</br> <img src="./pic/samba1.png" width="80%"></li>
+<li>在输入刚刚设置的用户名和密码后，就完成啦~</br> <img src="./pic/samba2.png" width="80%"></li>
+</ul>
+<h2 id="3docker的基础">3.docker的基础
+</h2><h3 id="31-docker-是什么用来干什么">3.1 docker 是什么，用来干什么？
+</h3><p>在开发的过程中我们需要搭建很多很多的环境，但是换一个Ubuntu的时候就要重新再次搭建。想想痛苦的过程不是很想经历多次，毕竟还是撸代码爽呀~</p>
+<p>所以我们就需要一个专门保存我们搭建好的环境，用的时候拿出来就好了，这就是docker的作用了，一个类似沙盒的虚拟机。</p>
+<p>目前来看，我们使用docker是为了适配各种不同的编译构建环境，docker是运行在linux系统下的虚拟系统（也可以把docker认为是一个VMware）。通过docker去编译构建，相当于把工程放入到沙盒中去操作，非法操作对主机无任何影响。</p>
+<h3 id="32-获取-docker">3.2 获取 docker
+</h3><p>这里就是安装docker的软件，安装完成还需要下载对应的镜像才能使用哦。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 安装docker</span>
+</span></span><span class="line"><span class="cl">sudo apt install docker.io
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 卸载旧版本</span>
+</span></span><span class="line"><span class="cl">sudo apt-get remove docker docker-engine docker.io
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">sudo apt-get update
+</span></span><span class="line"><span class="cl"><span class="c1"># 添加一个新的 HTTPS 软件源，安装一些允许通过HTTPS才能使用的软件包</span>
+</span></span><span class="line"><span class="cl">sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+</span></span><span class="line"><span class="cl"><span class="c1"># curl 导入源仓库的 GPG key，将官方Docker存储库的GPG密钥添加到系统</span>
+</span></span><span class="line"><span class="cl">curl -fsSL https://download.docker.com/linux/ubuntu/gpg <span class="p">|</span> sudo apt-key add -
+</span></span><span class="line"><span class="cl"><span class="c1"># 将 Docker APT 软件源添加到系统</span>
+</span></span><span class="line"><span class="cl">sudo add-apt-repository <span class="s2">&#34;deb [arch=amd64] https://download.docker.com/linux/ubuntu </span><span class="k">$(</span>lsb_release -cs<span class="k">)</span><span class="s2"> stable&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 安装docker （docker-ce 社区版、 docker-ee 企业版）</span>
+</span></span><span class="line"><span class="cl">sudo apt update
+</span></span><span class="line"><span class="cl">sudo apt install docker-ce
+</span></span><span class="line"><span class="cl"><span class="c1">#sudo apt-get install docker-ce docker-ce-cli containerd.io</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 验证docker</span>
+</span></span><span class="line"><span class="cl">sudo systemctl status docker
+</span></span><span class="line"><span class="cl"><span class="c1"># 输出大概如下</span>
+</span></span><span class="line"><span class="cl">● docker.service - Docker Application Container Engine
+</span></span><span class="line"><span class="cl">     Loaded: loaded <span class="o">(</span>/lib/systemd/system/docker.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
+</span></span><span class="line"><span class="cl">     Active: active <span class="o">(</span>running<span class="o">)</span> since Thu 2020-05-21 14:47:34 UTC<span class="p">;</span> 42s ago
+</span></span><span class="line"><span class="cl"><span class="c1"># 以上，docker工具下载完成</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="33-获取docker镜像">3.3 获取docker镜像
+</h3><p>Docker容器是从Docker镜像构建的。默认情况下，Docker从 <a class="link" href="https://hub.docker.com/"  target="_blank" rel="noopener"
+    >Docker Hub</a> 中提取这些镜像，这是一个由Docker管理的Docker镜像市场，这是Docker项目背后的公司。任何人都可以在Docker Hub上托管他们的Docker镜像，所以您只需要将您的应用程序和Linux放在那边托管即可。
+S</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 查找远端的镜像</span>
+</span></span><span class="line"><span class="cl">sudo docker search ubuntu
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">user@ubuntu:~$ sudo docker search ubuntu
+</span></span><span class="line"><span class="cl">NAME                DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+</span></span><span class="line"><span class="cl">ubuntu              Ubuntu is a Debian-based Linux operating sys…   <span class="m">16717</span>     <span class="o">[</span>OK<span class="o">]</span>       
+</span></span><span class="line"><span class="cl">websphere-liberty   WebSphere Liberty multi-architecture images …   <span class="m">296</span>       <span class="o">[</span>OK<span class="o">]</span>       
+</span></span><span class="line"><span class="cl">ubuntu-upstart      DEPRECATED, as is Upstart <span class="o">(</span>find other proces…   <span class="m">115</span>       <span class="o">[</span>OK<span class="o">]</span>       
+</span></span><span class="line"><span class="cl">neurodebian         NeuroDebian provides neuroscience research s…   <span class="m">105</span>       <span class="o">[</span>OK<span class="o">]</span>   
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 获取远端镜像</span>
+</span></span><span class="line"><span class="cl">sudo docker pull ubuntu
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 查看镜像</span>
+</span></span><span class="line"><span class="cl">sudo docker images
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">REPOSITORY   TAG       IMAGE ID       CREATED      SIZE
+</span></span><span class="line"><span class="cl">ubuntu       latest    df5de72bdb3b   <span class="m">2</span> days ago   77.8MB
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="34-运行-docker">3.4 运行 docker
+</h3><p>这里就是把下载好的镜像通过docker运行起来。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 运行</span>
+</span></span><span class="line"><span class="cl">docker run -it -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/home/openharmony ubuntu    <span class="c1"># /home/openharmony 可以自定</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">docker run -it --name my_name --hostname ubuntu_name -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/home/openharmony ubuntu   <span class="c1"># 这个是指定主机名和运行的用户名称</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># $(pwd) 这是shell命令，获取当前路径</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># my_name 可用于删除这个运行的docker</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># ubuntu_name 是docker进去之后显示的主机名字</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="35-保存修改后的镜像">3.5 保存修改后的镜像
+</h3><p>我们每次进去这个docker镜像，他都是上次保存的样子。如果我们需要搭建环境，都配置好了怎么拿到别的环境中去使用呢？跟我一起来实现吧~</p>
+<ul>
+<li>先进入docker，把需要的环境配置好，此时需要返回到 <code>ubuntu</code> 中来，可以在 <code>ubuntu</code> 中再开一个终端进行操作。</li>
+<li>使用以下的命令进行保存当前的修改。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 查看运行中的 docker</span>
+</span></span><span class="line"><span class="cl">sudo docker ps
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CONTAINER ID IMAGE    COMMAND     CREATED       STATUS          NAMES
+</span></span><span class="line"><span class="cl">bde135cb1ab9 ubuntu   <span class="s2">&#34;bash&#34;</span>    <span class="m">2</span> minutes ago   Up <span class="m">2</span> minutes    sweet_cori
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 保存指定镜像的改动，前提是docker未退出的情况下进行</span>
+</span></span><span class="line"><span class="cl">docker commit bde135cb1ab9 ubuntu
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="36-打包-docker-镜像">3.6 打包 docker 镜像
+</h3><p>环境配置好了，怎么给到别的环境去使用呢？那就需要以下两种方式打包出来了。</p>
+<ul>
+<li>保存与加载我们的 <code>docker</code> 镜像</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 查看已有镜像</span>
+</span></span><span class="line"><span class="cl">sudo docker images
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">REPOSITORY   TAG       IMAGE ID       CREATED      SIZE
+</span></span><span class="line"><span class="cl">ubuntu       latest    df5de72bdb3b   <span class="m">2</span> days ago   77.8MB
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 保存镜像</span>
+</span></span><span class="line"><span class="cl">docker save df5de72bdb3b ubuntu &gt; ubuntu.tar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 加载镜像</span>
+</span></span><span class="line"><span class="cl">docker load &lt; ubuntu.tar
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>导出与导入我们的 <code>docker</code> 镜像</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 查看 docker</span>
+</span></span><span class="line"><span class="cl">sudo docker ps
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CONTAINER ID IMAGE    COMMAND     CREATED       STATUS       NAMES
+</span></span><span class="line"><span class="cl">ffcdad1d05af ubuntu <span class="s2">&#34;bash&#34;</span> <span class="m">6</span> seconds ago Up <span class="m">6</span> seconds hardcore_lumiere
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 导出镜像 中间的参数是docker ps 查看运行中的docker才能导出</span>
+</span></span><span class="line"><span class="cl">docker <span class="nb">export</span> ffcdad1d05af &gt; ubuntu.tar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 在新机器导入镜像</span>
+</span></span><span class="line"><span class="cl">docker import - ununtu &lt; ubuntu.tar
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 新机器首次运行 可能需要加 /bin/bash</span>
+</span></span><span class="line"><span class="cl">docker run -it -v <span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>:/home/openharmony ubuntu /bin/bash
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="38-docker-的删除">3.8 docker 的删除
+</h2><p>有时候我们平凡使用docker，他会有停止的镜像占用我们的资源，或者有的镜像我们不需要了，就需要清除干净。</p>
+<ul>
+<li>关闭某一运行中的镜像，并进行清除。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 查看运行中的镜像</span>
+</span></span><span class="line"><span class="cl">user@ubuntu:~$ sudo docker ps
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">CONTAINER ID   IMAGE        COMMAND       CREATED         STATUS         PORTS     NAMES
+</span></span><span class="line"><span class="cl">835b42d983dd   ubuntu_2.1   <span class="s2">&#34;/bin/bash&#34;</span>   <span class="m">5</span> seconds ago   Up <span class="m">3</span> seconds             keen_sammet
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 停止镜像</span>
+</span></span><span class="line"><span class="cl">user@ubuntu:~$ sudo docker stop 835b42d983dd
+</span></span><span class="line"><span class="cl">835b42d983dd
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 删除镜像</span>
+</span></span><span class="line"><span class="cl">user@ubuntu:~$ sudo docker rm 835b42d983dd
+</span></span><span class="line"><span class="cl">835b42d983dd
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>关闭所有运行中的镜像，并进行清除。</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 关闭所有运行中的docker</span>
+</span></span><span class="line"><span class="cl">sudo docker stop <span class="k">$(</span>sudo docker ps -a -q<span class="k">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 删除所有占用的容器</span>
+</span></span><span class="line"><span class="cl">sudo docker rm <span class="k">$(</span>sudo docker ps -a -q<span class="k">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>删除无用的docker镜像</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="c1"># 查看镜像</span>
+</span></span><span class="line"><span class="cl">sudo docker images
+</span></span><span class="line"><span class="cl">REPOSITORY  TAG       IMAGE ID       CREATED        SIZE
+</span></span><span class="line"><span class="cl">ubuntu      latest    27941809078c   <span class="m">2</span> weeks ago    77.8MB
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 删除镜像 可用全量停止、全量删除使用的镜像</span>
+</span></span><span class="line"><span class="cl">docker rmi 27941809078c
+</span></span><span class="line"><span class="cl">Untagged: ubuntu:latest
+</span></span><span class="line"><span class="cl">Untagged: ubuntu@sha256:34fea4f31bf187bc915536831fd0afc9d214755bf700b5cdb1336c82516d154e
+</span></span><span class="line"><span class="cl">Deleted: sha256:df5de72bdb3b711aba4eca685b1f42c722cc8a1837ed3fbd548a9282af2d836d
+</span></span><span class="line"><span class="cl">Deleted: sha256:629d9dbab5edeac7fa51f205839d7f9bb629a5e83548da3a183fb66c22fe7af7
+</span></span></code></pre></td></tr></table>
+</div>
+</div>
+</section>
+
+
+    <footer class="article-footer">
+    
+
+    </footer>
+
+
+    
+</article>
+
+    
+
+    
+
+     
+    
+        
+    <script src="https://utteranc.es/client.js" 
+        repo=""
+        issue-term="pathname"
+        
+        crossorigin="anonymous"
+        async
+        >
+</script>
+
+<style>
+    .utterances {
+        max-width: unset;
+    }
+</style>
+
+<script>
+    let utterancesLoaded = false;
+
+    function setUtterancesTheme(theme) {
+        let utterances = document.querySelector('.utterances iframe');
+        if (utterances) {
+            utterances.contentWindow.postMessage(
+                {
+                    type: 'set-theme',
+                    theme: `github-${theme}`
+                },
+                'https://utteranc.es'
+            );
+        }
+    }
+
+    addEventListener('message', event => {
+        if (event.origin !== 'https://utteranc.es') return;
+
+        
+        utterancesLoaded = true;
+        setUtterancesTheme(document.documentElement.dataset.scheme)
+    });
+
+    window.addEventListener('onColorSchemeChange', (e) => {
+        if (!utterancesLoaded) return;
+        setUtterancesTheme(e.detail)
+    })
+</script>
+
+
+    
+
+    <footer class="site-footer">
+    <section class="copyright">
+        &copy; 
+        
+        2024 PandaBoard
+    </section>
+    
+    <section class="powerby">
+        坎坷，源自内心的恐惧 ~ <br />
+        主题 <b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="3.29.0">Stack</a></b> 由 <a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a> 设计 biu~ biu~
+    </section>
+</footer>
+
+
+    
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    
+    <div class="pswp__bg"></div>
+
+    
+    <div class="pswp__scroll-wrap">
+
+        
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                
+                
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo="crossorigin="anonymous"
+                defer
+                >
+            </script><script 
+                src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU="crossorigin="anonymous"
+                defer
+                >
+            </script><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css"crossorigin="anonymous"
+            ><link 
+                rel="stylesheet" 
+                href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css"crossorigin="anonymous"
+            >
+
+            </main>
+        </div>
+        <script 
+                src="https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js"integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z&#43;KMkF24hUW8WePSA9HM="crossorigin="anonymous"
+                
+                >
+            </script><script type="text/javascript" src="/ts/main.20581c2d3d910a95426aaa8fc25157ce165b4e7dd9f9ff100e6330b0dd3a3d13.js" defer></script>
+<script>
+    (function () {
+        const customFont = document.createElement('link');
+        customFont.href = "https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap";
+
+        customFont.type = "text/css";
+        customFont.rel = "stylesheet";
+
+        document.head.appendChild(customFont);
+    }());
+</script>
+
+    </body>
+</html>
