@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Python on PandaBoard</title>
+        <link>http://localhost:1313/categories/python/</link>
+        <description>Recent content in Python on PandaBoard</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>zh-cn</language>
+        <copyright>PandaBoard</copyright>
+        <lastBuildDate>Sun, 15 Dec 2024 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/categories/python/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>【3】切换python版本</title>
+        <link>http://localhost:1313/p/hjdj_3/</link>
+        <pubDate>Sun, 15 Dec 2024 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/p/hjdj_3/</guid>
+        <description>&lt;h1 id=&#34;切换python版本&#34;&gt;切换python版本
+&lt;/h1&gt;&lt;h2 id=&#34;1查看可选版本&#34;&gt;1、查看可选版本
+&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;update-alternatives --list python
+update-alternatives: 错误: 无 python 的候选项
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;2添加python选项&#34;&gt;2、添加python选项
+&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;sudo update-alternatives --install /usr/bin/python python /usr/bin/python2.7 2
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;3再次查看可选版本&#34;&gt;3、再次查看可选版本
+&lt;/h2&gt;&lt;pre&gt;&lt;code&gt;sudo update-alternatives --config python
+有 2 个候选项可用于替换 python (提供 /usr/bin/python)
+  选择       路径              优先级  状态
+------------------------------------------------------------
+* 0            /usr/bin/python2.7   2         自动模式
+  1            /usr/bin/python2.7   2         手动模式
+  2            /usr/bin/python3.8   1         手动模式
+要维持当前值[*]请按&amp;lt;回车键&amp;gt;，或者键入选择的编号：1 
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
